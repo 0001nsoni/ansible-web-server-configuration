@@ -1,0 +1,31 @@
+---
+ - name: configure web-server
+   hosts: proud
+   tasks:
+          - name: install httpd on all nodes
+            yum:
+                  name: httpd
+                  state: present
+
+          - name: start & enable
+            service:
+                    name: httpd.service
+                    state: started
+                    enabled: yes
+
+          - name: open 80/tcp port on firewall
+            firewalld:
+                  port: 80/tcp
+                  state: enabled
+                  permanent: true
+                  immediate: true
+
+          - name: copy web content to documnet root
+            copy:
+                  src: ./index.html
+                  dest: /var/www/html
+
+          - name: restart service
+            service:
+                    name: httpd.service
+                    state: restarted
